@@ -1,0 +1,46 @@
+{
+	"name": "effect-obsidian",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Effect helpers for Obsidian plugins",
+	"license": "0BSD",
+	"files": [
+		"src"
+	],
+	"type": "module",
+	"imports": {
+		"#src/*": "./src/*.ts"
+	},
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"import": "./src/index.ts",
+			"default": "./src/index.ts"
+		}
+	},
+	"scripts": {
+		"check": "pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run test",
+		"format": "oxfmt --write .",
+		"format:check": "oxfmt --check .",
+		"lint": "oxlint --type-aware .",
+		"test": "vitest run",
+		"typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.vitest.json --noEmit"
+	},
+	"dependencies": {
+		"effect": "4.0.0-rc.113"
+	},
+	"devDependencies": {
+		"@effect/language-service": "0.87.2",
+		"@effect/vitest": "4.0.0-rc.113",
+		"@types/node": "24.9.2",
+		"oxfmt": "0.67.0",
+		"oxlint": "1.82.0",
+		"oxlint-tsgolint": "7.0.2001",
+		"typescript": "7.0.2",
+		"vitest": "5.0.0"
+	},
+	"engines": {
+		"node": ">=24"
+	},
+	"packageManager": "pnpm@11.8.0"
+}

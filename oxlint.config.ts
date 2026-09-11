@@ -1,0 +1,72 @@
+import { defineConfig } from 'oxlint'
+
+export default defineConfig({
+	categories: {
+		correctness: 'error',
+		suspicious: 'error',
+		perf: 'error',
+	},
+	plugins: ['typescript', 'vitest', 'unicorn', 'import', 'node', 'promise'],
+	rules: {
+		'complexity': ['error', 8],
+		'eqeqeq': 'error',
+		'max-depth': ['error', 3],
+		'max-lines-per-function': ['error', 120],
+		'max-params': ['error', 4],
+		'no-console': 'error',
+		'no-else-return': 'error',
+		'no-underscore-dangle': ['error', { allow: ['_tag'] }],
+		'no-unused-vars': 'error',
+		'import/no-cycle': 'error',
+		'import/no-default-export': 'error',
+		'import/no-self-import': 'error',
+		'typescript/explicit-function-return-type': 'error',
+		'typescript/explicit-module-boundary-types': 'error',
+		'typescript/no-explicit-any': 'error',
+		'typescript/no-floating-promises': 'error',
+		'typescript/no-import-type-side-effects': 'error',
+		'typescript/no-misused-promises': 'error',
+		'typescript/no-non-null-assertion': 'error',
+		'typescript/no-unnecessary-type-assertion': 'error',
+		'typescript/no-unsafe-argument': 'error',
+		'typescript/no-unsafe-assignment': 'error',
+		'typescript/no-unsafe-call': 'error',
+		'typescript/no-unsafe-member-access': 'error',
+		'typescript/no-unsafe-return': 'error',
+		'typescript/only-throw-error': 'error',
+		'typescript/prefer-nullish-coalescing': 'error',
+		'typescript/restrict-plus-operands': 'error',
+		'typescript/strict-boolean-expressions': 'error',
+		'typescript/switch-exhaustiveness-check': 'error',
+		'typescript/use-unknown-in-catch-callback-variable': 'error',
+		'unicorn/filename-case': ['error', { case: 'kebabCase' }],
+		'unicorn/prefer-node-protocol': 'error',
+		'vitest/expect-expect': [
+			'error',
+			{ assertFunctionNames: ['expect', 'expect*', 'assert', 'assert*'] },
+		],
+		'vitest/no-standalone-expect': 'off',
+	},
+	overrides: [
+		{
+			files: ['oxlint.config.ts', 'vitest.config.ts'],
+			rules: {
+				'import/no-default-export': 'off',
+			},
+		},
+		{
+			files: ['**/*.test.ts'],
+			rules: {
+				'complexity': 'off',
+				'max-lines-per-function': 'off',
+				'typescript/explicit-function-return-type': 'off',
+				'typescript/explicit-module-boundary-types': 'off',
+			},
+		},
+	],
+	ignorePatterns: ['**/node_modules/**', '**/dist/**', '**/coverage/**'],
+	options: {
+		typeAware: true,
+		maxWarnings: 0,
+	},
+})

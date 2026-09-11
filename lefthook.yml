@@ -1,0 +1,11 @@
+pre-commit:
+  commands:
+    format:
+      glob: '*.{ts,tsx,js,mjs,cjs,json,yml,yaml}'
+      run: pnpm exec oxfmt --write {staged_files}
+      stage_fixed: true
+
+pre-push:
+  commands:
+    check:
+      run: pnpm check
