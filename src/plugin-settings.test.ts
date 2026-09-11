@@ -17,6 +17,7 @@ describe('plugin settings', () => {
 				schema: SampleSettings,
 				fallback,
 			})
+
 			assert.deepStrictEqual(settings, fallback)
 		}).pipe(Effect.provide(memoryPluginDataStoreLayer())),
 	)
@@ -27,6 +28,7 @@ describe('plugin settings', () => {
 				schema: SampleSettings,
 				fallback,
 			})
+
 			assert.deepStrictEqual(settings, { theme: 'dark' })
 		}).pipe(Effect.provide(memoryPluginDataStoreLayer({ theme: 'dark' }))),
 	)
@@ -39,6 +41,7 @@ describe('plugin settings', () => {
 					fallback,
 				}),
 			)
+
 			assert.strictEqual(error._tag, 'PluginSettingsDecodeError')
 			assert.strictEqual(
 				error.message,
@@ -53,10 +56,12 @@ describe('plugin settings', () => {
 				schema: SampleSettings,
 				value: { theme: 'dark' },
 			})
+
 			const settings = yield* loadPluginSettings({
 				schema: SampleSettings,
 				fallback,
 			})
+
 			assert.deepStrictEqual(settings, { theme: 'dark' })
 			const store = yield* PluginDataStore
 			assert.deepStrictEqual(yield* store.loadJson(), { theme: 'dark' })

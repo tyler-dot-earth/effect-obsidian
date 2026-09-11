@@ -32,6 +32,7 @@ describe('PluginDataStore', () => {
 				loadData: () => Promise.reject(new Error('disk missing')),
 				saveData: () => Promise.resolve(),
 			})
+
 			const error = yield* Effect.flip(store.loadJson())
 			assert.strictEqual(error._tag, 'PluginDataLoadError')
 			assert.strictEqual(error.message, 'PluginDataLoadError: failed to load plugin data.json')
@@ -45,6 +46,7 @@ describe('PluginDataStore', () => {
 				loadData: () => Promise.resolve(null),
 				saveData: () => Promise.reject(new Error('disk full')),
 			})
+
 			const error = yield* Effect.flip(store.saveJson({ theme: 'dark' }))
 			assert.strictEqual(error._tag, 'PluginDataSaveError')
 			assert.strictEqual(error.message, 'PluginDataSaveError: failed to save plugin data.json')

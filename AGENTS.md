@@ -17,3 +17,8 @@ Effect helpers for Obsidian plugins. Latest Effect v4 rc.
 - Package imports: `#src/plugin-data-store`
 - Colocate tests next to the module
 - Do not import `obsidian`. Hosts pass `loadData` / `saveData` callbacks
+
+## Lint
+
+- Oxlint plus vendored anti-slop at `tools/oxlint/anti-slop/` (generic + Effect plugins)
+- Do not edit anti-slop to silence app findings. Fix owned source or record a provenance deviation

@@ -11,9 +11,11 @@ describe('plugin runtime', () => {
 
 	it('disposing the plugin runtime runs layer finalizers', async () => {
 		const finalized = await Effect.runPromise(Ref.make(false))
+
 		const layer = Layer.effectDiscard(
 			Effect.acquireRelease(Effect.void, () => Ref.set(finalized, true)),
 		)
+
 		const runtime = makePluginRuntime(layer)
 		await runtime.runPromise(Effect.void)
 		await disposePluginRuntime(runtime)

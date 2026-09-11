@@ -2,8 +2,9 @@ import { Effect, Schema } from 'effect'
 
 import {
 	type PluginDataLoadError,
-	PluginDataStore,
 	type PluginDataSaveError,
+	type PluginJsonValue,
+	PluginDataStore,
 } from '#src/plugin-data-store'
 
 /** Plugin data.json did not match the settings schema. */
@@ -24,13 +25,12 @@ export class PluginSettingsEncodeError extends Schema.TaggedError<PluginSettings
 	},
 ) {}
 
-const isMissingPluginData = (raw: unknown): boolean => raw === undefined || raw === null
+const isMissingPluginData = (raw: PluginJsonValue | null): boolean => raw === null
 
 /**
  * Loads plugin settings from data.json and decodes them with the given schema.
  *
- * Missing data (null or undefined) returns fallback. Malformed data fails with
- * PluginSettingsDecodeError.
+ * Missing data (null) returns fallback. Malformed data fails with PluginSettingsDecodeError.
  */
 export const loadPluginSettings: <S extends Schema.Constraint>(options: {
 	readonly schema: S
@@ -42,9 +42,11 @@ export const loadPluginSettings: <S extends Schema.Constraint>(options: {
 > = Effect.fn('PluginSettings.load')(function* (options) {
 	const store = yield* PluginDataStore
 	const raw = yield* store.loadJson()
+
 	if (isMissingPluginData(raw)) {
 		return options.fallback
 	}
+
 	return yield* Schema.decodeUnknownEffect(options.schema)(raw).pipe(
 		Effect.mapError(
 			(parseError) =>
@@ -66,6 +68,7 @@ export const savePluginSettings: <S extends Schema.Constraint>(options: {
 	PluginDataStore | S['EncodingServices']
 > = Effect.fn('PluginSettings.save')(function* (options) {
 	const store = yield* PluginDataStore
+
 	const encoded = yield* Schema.encodeUnknownEffect(options.schema)(options.value).pipe(
 		Effect.mapError(
 			(parseError) =>
@@ -75,5 +78,16 @@ export const savePluginSettings: <S extends Schema.Constraint>(options: {
 				}),
 		),
 	)
-	yield* store.saveJson(encoded)
+
+	const json = yield* Schema.decodeUnknownEffect(Schema.Json)(encoded).pipe(
+		Effect.mapError(
+			(parseError) =>
+				new PluginSettingsEncodeError({
+					message: 'PluginSettingsEncodeError: plugin settings failed schema encode',
+					parseError,
+				}),
+		),
+	)
+
+	yield* store.saveJson(json)
 })

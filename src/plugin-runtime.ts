@@ -18,5 +18,6 @@ export const disposePluginRuntime = async (
 	if (runtime === undefined) {
 		return
 	}
+
 	await runtime.dispose()
 }

@@ -1,9 +1,12 @@
 import { Context, Effect, Layer, Ref, Schema } from 'effect'
 
+/** JSON value stored in plugin data.json. */
+export type PluginJsonValue = typeof Schema.Json.Type
+
 /** Obsidian Plugin loadData/saveData callbacks, without importing the Obsidian package. */
 export interface PluginDataHost {
-	readonly loadData: () => Promise<unknown>
-	readonly saveData: (data: unknown) => Promise<void>
+	readonly loadData: () => Promise<PluginJsonValue | null>
+	readonly saveData: (data: PluginJsonValue) => Promise<void>
 }
 
 /** Failed to read the plugin data.json file. */
@@ -26,8 +29,8 @@ export class PluginDataSaveError extends Schema.TaggedError<PluginDataSaveError>
 
 /** Reads and writes plugin data.json through Effect. */
 export interface PluginDataStoreContract {
-	readonly loadJson: () => Effect.Effect<unknown, PluginDataLoadError>
-	readonly saveJson: (value: unknown) => Effect.Effect<void, PluginDataSaveError>
+	readonly loadJson: () => Effect.Effect<PluginJsonValue | null, PluginDataLoadError>
+	readonly saveJson: (value: PluginJsonValue) => Effect.Effect<void, PluginDataSaveError>
 }
 
 /** Service tag for plugin data.json load and save. */
@@ -47,7 +50,7 @@ export const pluginDataStoreFromHost = (host: PluginDataHost): PluginDataStoreCo
 				}),
 		})
 	}),
-	saveJson: Effect.fn('PluginDataStore.saveJson')(function* (value: unknown) {
+	saveJson: Effect.fn('PluginDataStore.saveJson')(function* (value: PluginJsonValue) {
 		yield* Effect.tryPromise({
 			try: () => host.saveData(value),
 			catch: (cause) =>
@@ -64,16 +67,19 @@ export const pluginDataStoreLayerFromHost = (host: PluginDataHost): Layer.Layer<
 	Layer.succeed(PluginDataStore, pluginDataStoreFromHost(host))
 
 /** In-memory PluginDataStore for tests. Missing data is represented as null. */
-export const memoryPluginDataStoreLayer = (initial: unknown = null): Layer.Layer<PluginDataStore> =>
+export const memoryPluginDataStoreLayer = (
+	initial: PluginJsonValue | null = null,
+): Layer.Layer<PluginDataStore> =>
 	Layer.effect(
 		PluginDataStore,
 		Effect.gen(function* () {
-			const cell = yield* Ref.make(initial)
+			const cell = yield* Ref.make<PluginJsonValue | null>(initial)
+
 			return {
 				loadJson: Effect.fn('PluginDataStore.loadJson')(function* () {
 					return yield* Ref.get(cell)
 				}),
-				saveJson: Effect.fn('PluginDataStore.saveJson')(function* (value: unknown) {
+				saveJson: Effect.fn('PluginDataStore.saveJson')(function* (value: PluginJsonValue) {
 					yield* Ref.set(cell, value)
 				}),
 			}
