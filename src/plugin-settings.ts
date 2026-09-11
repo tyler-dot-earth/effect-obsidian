@@ -3,8 +3,9 @@ import { Effect, Schema } from 'effect'
 import {
 	type PluginDataLoadError,
 	type PluginDataSaveError,
-	type PluginJsonValue,
 	PluginDataStore,
+	PluginJsonValue,
+	type PluginStoredJson,
 } from '#src/plugin-data-store'
 
 /** Plugin data.json did not match the settings schema. */
@@ -25,7 +26,7 @@ export class PluginSettingsEncodeError extends Schema.TaggedError<PluginSettings
 	},
 ) {}
 
-const isMissingPluginData = (raw: PluginJsonValue | null): boolean => raw === null
+const isMissingPluginData = (raw: PluginStoredJson): boolean => raw === null
 
 /**
  * Loads plugin settings from data.json and decodes them with the given schema.
@@ -79,7 +80,7 @@ export const savePluginSettings: <S extends Schema.Constraint>(options: {
 		),
 	)
 
-	const json = yield* Schema.decodeUnknownEffect(Schema.Json)(encoded).pipe(
+	const json = yield* Schema.decodeUnknownEffect(PluginJsonValue)(encoded).pipe(
 		Effect.mapError(
 			(parseError) =>
 				new PluginSettingsEncodeError({

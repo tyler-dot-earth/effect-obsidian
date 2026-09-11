@@ -1,11 +1,18 @@
 import { Context, Effect, Layer, Ref, Schema } from 'effect'
 
 /** JSON value stored in plugin data.json. */
-export type PluginJsonValue = typeof Schema.Json.Type
+export const PluginJsonValue = Schema.Json
+
+export type PluginJsonValue = typeof PluginJsonValue.Type
+
+/** Plugin data.json contents, or null when the file is missing. */
+export const PluginStoredJson = Schema.NullOr(PluginJsonValue)
+
+export type PluginStoredJson = typeof PluginStoredJson.Type
 
 /** Obsidian Plugin loadData/saveData callbacks, without importing the Obsidian package. */
 export interface PluginDataHost {
-	readonly loadData: () => Promise<PluginJsonValue | null>
+	readonly loadData: () => Promise<PluginStoredJson>
 	readonly saveData: (data: PluginJsonValue) => Promise<void>
 }
 
@@ -29,7 +36,7 @@ export class PluginDataSaveError extends Schema.TaggedError<PluginDataSaveError>
 
 /** Reads and writes plugin data.json through Effect. */
 export interface PluginDataStoreContract {
-	readonly loadJson: () => Effect.Effect<PluginJsonValue | null, PluginDataLoadError>
+	readonly loadJson: () => Effect.Effect<PluginStoredJson, PluginDataLoadError>
 	readonly saveJson: (value: PluginJsonValue) => Effect.Effect<void, PluginDataSaveError>
 }
 
@@ -68,12 +75,12 @@ export const pluginDataStoreLayerFromHost = (host: PluginDataHost): Layer.Layer<
 
 /** In-memory PluginDataStore for tests. Missing data is represented as null. */
 export const memoryPluginDataStoreLayer = (
-	initial: PluginJsonValue | null = null,
+	initial: PluginStoredJson = null,
 ): Layer.Layer<PluginDataStore> =>
 	Layer.effect(
 		PluginDataStore,
 		Effect.gen(function* () {
-			const cell = yield* Ref.make<PluginJsonValue | null>(initial)
+			const cell = yield* Ref.make<PluginStoredJson>(initial)
 
 			return {
 				loadJson: Effect.fn('PluginDataStore.loadJson')(function* () {
