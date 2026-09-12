@@ -10,7 +10,12 @@ export const PluginStoredJson = Schema.NullOr(PluginJsonValue)
 
 export type PluginStoredJson = typeof PluginStoredJson.Type
 
-/** Obsidian Plugin loadData/saveData callbacks, without importing the Obsidian package. */
+/**
+ * Obsidian Plugin loadData/saveData callbacks, without importing the Obsidian package.
+ *
+ * Normalize missing data.json to `null` before `loadData` resolves. Obsidian itself may return
+ * `undefined`.
+ */
 export interface PluginDataHost {
 	readonly loadData: () => Promise<PluginStoredJson>
 	readonly saveData: (data: PluginJsonValue) => Promise<void>
@@ -46,28 +51,29 @@ export class PluginDataStore extends Context.Service<PluginDataStore, PluginData
 ) {}
 
 /** Wraps Obsidian Plugin loadData/saveData as a PluginDataStore. */
-export const pluginDataStoreFromHost = (host: PluginDataHost): PluginDataStoreContract => ({
-	loadJson: Effect.fn('PluginDataStore.loadJson')(function* () {
-		return yield* Effect.tryPromise({
-			try: () => host.loadData(),
-			catch: (cause) =>
-				new PluginDataLoadError({
-					message: 'PluginDataLoadError: failed to load plugin data.json',
-					cause,
-				}),
-		})
-	}),
-	saveJson: Effect.fn('PluginDataStore.saveJson')(function* (value: PluginJsonValue) {
-		yield* Effect.tryPromise({
-			try: () => host.saveData(value),
-			catch: (cause) =>
-				new PluginDataSaveError({
-					message: 'PluginDataSaveError: failed to save plugin data.json',
-					cause,
-				}),
-		})
-	}),
-})
+export const pluginDataStoreFromHost = (host: PluginDataHost): PluginDataStoreContract =>
+	PluginDataStore.of({
+		loadJson: Effect.fn('PluginDataStore.loadJson')(function* () {
+			return yield* Effect.tryPromise({
+				try: () => host.loadData(),
+				catch: (cause) =>
+					new PluginDataLoadError({
+						message: 'PluginDataLoadError: failed to load plugin data.json',
+						cause,
+					}),
+			})
+		}),
+		saveJson: Effect.fn('PluginDataStore.saveJson')(function* (value: PluginJsonValue) {
+			yield* Effect.tryPromise({
+				try: () => host.saveData(value),
+				catch: (cause) =>
+					new PluginDataSaveError({
+						message: 'PluginDataSaveError: failed to save plugin data.json',
+						cause,
+					}),
+			})
+		}),
+	})
 
 /** Provides PluginDataStore from an Obsidian plugin host. */
 export const pluginDataStoreLayerFromHost = (host: PluginDataHost): Layer.Layer<PluginDataStore> =>
@@ -82,13 +88,13 @@ export const memoryPluginDataStoreLayer = (
 		Effect.gen(function* () {
 			const cell = yield* Ref.make<PluginStoredJson>(initial)
 
-			return {
+			return PluginDataStore.of({
 				loadJson: Effect.fn('PluginDataStore.loadJson')(function* () {
 					return yield* Ref.get(cell)
 				}),
 				saveJson: Effect.fn('PluginDataStore.saveJson')(function* (value: PluginJsonValue) {
 					yield* Ref.set(cell, value)
 				}),
-			}
+			})
 		}),
 	)

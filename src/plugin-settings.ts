@@ -1,11 +1,10 @@
-import { Effect, Schema } from 'effect'
+import { Effect, Option, Schema } from 'effect'
 
 import {
 	type PluginDataLoadError,
 	type PluginDataSaveError,
 	PluginDataStore,
 	PluginJsonValue,
-	type PluginStoredJson,
 } from '#src/plugin-data-store'
 
 /** Plugin data.json did not match the settings schema. */
@@ -26,8 +25,6 @@ export class PluginSettingsEncodeError extends Schema.TaggedError<PluginSettings
 	},
 ) {}
 
-const isMissingPluginData = (raw: PluginStoredJson): boolean => raw === null
-
 /**
  * Loads plugin settings from data.json and decodes them with the given schema.
  *
@@ -44,19 +41,19 @@ export const loadPluginSettings: <S extends Schema.Constraint>(options: {
 	const store = yield* PluginDataStore
 	const raw = yield* store.loadJson()
 
-	if (isMissingPluginData(raw)) {
-		return options.fallback
-	}
-
-	return yield* Schema.decodeUnknownEffect(options.schema)(raw).pipe(
-		Effect.mapError(
-			(parseError) =>
-				new PluginSettingsDecodeError({
-					message: 'PluginSettingsDecodeError: plugin data.json failed schema decode',
-					parseError,
-				}),
-		),
-	)
+	return yield* Option.match(Option.fromNullOr(raw), {
+		onNone: () => Effect.succeed(options.fallback),
+		onSome: (json) =>
+			Schema.decodeUnknownEffect(options.schema)(json).pipe(
+				Effect.mapError(
+					(parseError) =>
+						new PluginSettingsDecodeError({
+							message: 'PluginSettingsDecodeError: plugin data.json failed schema decode',
+							parseError,
+						}),
+				),
+			),
+	})
 })
 
 /** Encodes plugin settings and writes them to data.json. */
@@ -70,7 +67,7 @@ export const savePluginSettings: <S extends Schema.Constraint>(options: {
 > = Effect.fn('PluginSettings.save')(function* (options) {
 	const store = yield* PluginDataStore
 
-	const encoded = yield* Schema.encodeUnknownEffect(options.schema)(options.value).pipe(
+	const encoded = yield* Schema.encodeEffect(options.schema)(options.value).pipe(
 		Effect.mapError(
 			(parseError) =>
 				new PluginSettingsEncodeError({

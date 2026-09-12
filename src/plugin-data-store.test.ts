@@ -34,9 +34,8 @@ describe('PluginDataStore', () => {
 			})
 
 			const error = yield* Effect.flip(store.loadJson())
-			assert.strictEqual(error._tag, 'PluginDataLoadError')
-			assert.strictEqual(error.message, 'PluginDataLoadError: failed to load plugin data.json')
 			assert.ok(error instanceof PluginDataLoadError)
+			assert.strictEqual(error.message, 'PluginDataLoadError: failed to load plugin data.json')
 		}),
 	)
 
@@ -48,9 +47,8 @@ describe('PluginDataStore', () => {
 			})
 
 			const error = yield* Effect.flip(store.saveJson({ theme: 'dark' }))
-			assert.strictEqual(error._tag, 'PluginDataSaveError')
-			assert.strictEqual(error.message, 'PluginDataSaveError: failed to save plugin data.json')
 			assert.ok(error instanceof PluginDataSaveError)
+			assert.strictEqual(error.message, 'PluginDataSaveError: failed to save plugin data.json')
 		}),
 	)
 })

@@ -2,7 +2,11 @@ import { assert, describe, it } from '@effect/vitest'
 import { Effect, Schema } from 'effect'
 
 import { memoryPluginDataStoreLayer, PluginDataStore } from '#src/plugin-data-store'
-import { loadPluginSettings, savePluginSettings } from '#src/plugin-settings'
+import {
+	loadPluginSettings,
+	PluginSettingsDecodeError,
+	savePluginSettings,
+} from '#src/plugin-settings'
 
 const SampleSettings = Schema.Struct({
 	theme: Schema.String,
@@ -42,7 +46,7 @@ describe('plugin settings', () => {
 				}),
 			)
 
-			assert.strictEqual(error._tag, 'PluginSettingsDecodeError')
+			assert.ok(error instanceof PluginSettingsDecodeError)
 			assert.strictEqual(
 				error.message,
 				'PluginSettingsDecodeError: plugin data.json failed schema decode',

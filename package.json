@@ -5,9 +5,11 @@
 	"description": "Effect helpers for Obsidian plugins",
 	"license": "0BSD",
 	"files": [
-		"src"
+		"src",
+		"!**/*.test.ts"
 	],
 	"type": "module",
+	"sideEffects": false,
 	"imports": {
 		"#src/*": "./src/*.ts"
 	},
@@ -39,6 +41,9 @@
 		"oxlint-tsgolint": "7.0.2001",
 		"typescript": "7.0.2",
 		"vitest": "5.0.0"
+	},
+	"peerDependencies": {
+		"effect": "4.0.0-rc.113"
 	},
 	"engines": {
 		"node": ">=24"

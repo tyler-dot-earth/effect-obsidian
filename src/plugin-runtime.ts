@@ -12,8 +12,8 @@ export const makePluginRuntime = <R, E>(
  * Disposes a plugin ManagedRuntime. Safe when the runtime was never created. Call from
  * Plugin.onunload.
  */
-export const disposePluginRuntime = async (
-	runtime: { readonly dispose: () => Promise<void> } | undefined,
+export const disposePluginRuntime = async <R, E>(
+	runtime: ManagedRuntime.ManagedRuntime<R, E> | undefined,
 ): Promise<void> => {
 	if (runtime === undefined) {
 		return
