@@ -1,6 +1,6 @@
 # effect-obsidian
 
-Effect helpers for Obsidian plugins. Latest Effect v4 rc.
+Effect helpers for Obsidian plugins. Latest Effect v4 rc. Not an Obsidian API wrapper. `loadData` / `saveData` and a plugin-scoped `ManagedRuntime` only.
 
 ## Effect
 
