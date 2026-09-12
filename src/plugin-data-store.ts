@@ -1,4 +1,4 @@
-import { Context, Effect, Layer, Ref, Schema } from 'effect'
+import { Context, Effect, Layer, Option, Ref, Schema } from 'effect'
 
 /** JSON value stored in plugin data.json. */
 export const PluginJsonValue = Schema.Json
@@ -11,13 +11,21 @@ export const PluginStoredJson = Schema.NullOr(PluginJsonValue)
 export type PluginStoredJson = typeof PluginStoredJson.Type
 
 /**
+ * What Obsidian Plugin.loadData() resolves to. Missing data.json is `undefined`. A JSON `null` file
+ * is `null`.
+ */
+export const PluginLoadData = Schema.NullishOr(PluginJsonValue)
+
+export type PluginLoadData = typeof PluginLoadData.Type
+
+/**
  * Obsidian Plugin loadData/saveData callbacks, without importing the Obsidian package.
  *
- * Normalize missing data.json to `null` before `loadData` resolves. Obsidian itself may return
- * `undefined`.
+ * Pass `plugin.loadData` / `plugin.saveData` through. This store maps `undefined` to `null` and
+ * rejects non-JSON.
  */
 export interface PluginDataHost {
-	readonly loadData: () => Promise<PluginStoredJson>
+	readonly loadData: () => Promise<PluginLoadData>
 	readonly saveData: (data: PluginJsonValue) => Promise<void>
 }
 
@@ -50,11 +58,25 @@ export class PluginDataStore extends Context.Service<PluginDataStore, PluginData
 	'effect-obsidian/PluginDataStore',
 ) {}
 
+const pluginStoredJsonFromLoadData = (
+	raw: PluginLoadData,
+): Effect.Effect<PluginStoredJson, PluginDataLoadError> =>
+	Schema.decodeUnknownEffect(PluginLoadData)(raw).pipe(
+		Effect.map((loaded) => Option.getOrNull(Option.fromNullishOr(loaded))),
+		Effect.mapError(
+			(parseError) =>
+				new PluginDataLoadError({
+					message: 'PluginDataLoadError: plugin data.json was not JSON',
+					cause: parseError,
+				}),
+		),
+	)
+
 /** Wraps Obsidian Plugin loadData/saveData as a PluginDataStore. */
 export const pluginDataStoreFromHost = (host: PluginDataHost): PluginDataStoreContract =>
 	PluginDataStore.of({
 		loadJson: Effect.fn('PluginDataStore.loadJson')(function* () {
-			return yield* Effect.tryPromise({
+			const raw = yield* Effect.tryPromise({
 				try: () => host.loadData(),
 				catch: (cause) =>
 					new PluginDataLoadError({
@@ -62,6 +84,8 @@ export const pluginDataStoreFromHost = (host: PluginDataHost): PluginDataStoreCo
 						cause,
 					}),
 			})
+
+			return yield* pluginStoredJsonFromLoadData(raw)
 		}),
 		saveJson: Effect.fn('PluginDataStore.saveJson')(function* (value: PluginJsonValue) {
 			yield* Effect.tryPromise({

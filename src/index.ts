@@ -6,6 +6,7 @@ export {
 	pluginDataStoreFromHost,
 	pluginDataStoreLayerFromHost,
 	PluginJsonValue,
+	PluginLoadData,
 	PluginStoredJson,
 } from '#src/plugin-data-store'
 

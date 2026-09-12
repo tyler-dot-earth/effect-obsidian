@@ -26,6 +26,28 @@ describe('PluginDataStore', () => {
 		}).pipe(Effect.provide(memoryPluginDataStoreLayer({ theme: 'light' }))),
 	)
 
+	it.effect('maps missing host data to null', () =>
+		Effect.gen(function* () {
+			const store = pluginDataStoreFromHost({
+				loadData: () => Promise.resolve(undefined),
+				saveData: () => Promise.resolve(),
+			})
+
+			assert.strictEqual(yield* store.loadJson(), null)
+		}),
+	)
+
+	it.effect('keeps json objects from the host', () =>
+		Effect.gen(function* () {
+			const store = pluginDataStoreFromHost({
+				loadData: () => Promise.resolve({ theme: 'dark' }),
+				saveData: () => Promise.resolve(),
+			})
+
+			assert.deepStrictEqual(yield* store.loadJson(), { theme: 'dark' })
+		}),
+	)
+
 	it.effect('maps host load failures to PluginDataLoadError', () =>
 		Effect.gen(function* () {
 			const store = pluginDataStoreFromHost({

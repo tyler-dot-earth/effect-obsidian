@@ -8,7 +8,7 @@ Effect helpers for Obsidian plugins. Latest Effect v4 rc. Not an Obsidian API wr
 - `Context.Service` classes, `Layer.effect` / `Layer.succeed`, `Effect.fn("Domain.operation")`
 - `Schema.Struct` plus a same-name interface; `Schema.TaggedError` for typed failures
 - Decode untrusted input with `Schema.decodeUnknownEffect`. Encode typed values with `Schema.encodeEffect`
-- Missing `data.json` is `null`. `loadPluginSettings` uses `Option.fromNullOr`
+- Missing `data.json` is `undefined` from Obsidian. The store decodes `PluginLoadData` and maps nullish to `null`. `loadPluginSettings` uses `Option.fromNullOr`
 - No `async`/`await` or `try`/`catch` inside Effect programs; plugin classes are the host boundary
 - `makePluginRuntime` / `disposePluginRuntime` are the host Promise edge around `ManagedRuntime`
 - Tests: `@effect/vitest` `it.effect` and `assert`. Do not `Effect.runSync` in tests
