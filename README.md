@@ -2,7 +2,11 @@
 
 Effect helpers for Obsidian plugins. Peer on Effect v4 rc.
 
-Covers plugin lifetime (`ManagedRuntime` on load/unload), `data.json` load/save, and Schema-decoded settings. It does not import the Obsidian package. Pass `Plugin.loadData` / `Plugin.saveData` in. Missing data is `null`. Normalize Obsidian's `undefined` before the host callback resolves.
+This is not an Effect wrapper for the Obsidian API. It covers two Plugin methods from the official [Settings](https://docs.obsidian.md/Plugins/User+interface/Settings) guide, `loadData` and `saveData`, plus a `ManagedRuntime` whose lifetime matches `onload` / `onunload`. Schema decode replaces the sample plugin's `Object.assign({}, DEFAULT, await this.loadData())`.
+
+Missing data is `null`. Normalize Obsidian's `undefined` before the host callback resolves. The package does not import `obsidian`.
+
+Everything else stays in the plugin. Commands, views, vault, workspace, editor, Bases, settings tabs, `onExternalSettingsChange`, ribbon, status bar. Call those on `Plugin` and `App` as usual.
 
 Not on npm yet. Consume it as a sibling checkout:
 
