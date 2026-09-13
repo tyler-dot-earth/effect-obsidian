@@ -7,7 +7,7 @@ import {
 	PluginDataSaveError,
 	PluginDataStore,
 	pluginDataStoreFromHost,
-} from '#src/plugin-data-store'
+} from '#/src/plugin-data-store'
 
 describe('PluginDataStore', () => {
 	it.effect('round-trips json through the memory store', () =>

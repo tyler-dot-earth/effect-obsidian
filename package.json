@@ -11,7 +11,7 @@
 	"type": "module",
 	"sideEffects": false,
 	"imports": {
-		"#src/*": "./src/*.ts"
+		"#/src/*": "./src/*.ts"
 	},
 	"exports": {
 		".": {

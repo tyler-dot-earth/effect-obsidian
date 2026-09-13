@@ -1,7 +1,7 @@
 import { assert, describe, it } from '@effect/vitest'
 import { Effect, Layer, Ref } from 'effect'
 
-import { disposePluginRuntime, makePluginRuntime } from '#src/plugin-runtime'
+import { disposePluginRuntime, makePluginRuntime } from '#/src/plugin-runtime'
 
 describe('plugin runtime', () => {
 	it.effect('disposing an unused runtime is a no-op', () =>

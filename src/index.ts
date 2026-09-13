@@ -8,15 +8,15 @@ export {
 	PluginJsonValue,
 	PluginLoadData,
 	PluginStoredJson,
-} from '#src/plugin-data-store'
+} from '#/src/plugin-data-store'
 
-export type { PluginDataHost, PluginDataStoreContract } from '#src/plugin-data-store'
+export type { PluginDataHost, PluginDataStoreContract } from '#/src/plugin-data-store'
 
-export { disposePluginRuntime, makePluginRuntime } from '#src/plugin-runtime'
+export { disposePluginRuntime, makePluginRuntime } from '#/src/plugin-runtime'
 
 export {
 	loadPluginSettings,
 	PluginSettingsDecodeError,
 	PluginSettingsEncodeError,
 	savePluginSettings,
-} from '#src/plugin-settings'
+} from '#/src/plugin-settings'

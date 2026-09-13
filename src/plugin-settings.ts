@@ -5,7 +5,7 @@ import {
 	type PluginDataSaveError,
 	PluginDataStore,
 	PluginJsonValue,
-} from '#src/plugin-data-store'
+} from '#/src/plugin-data-store'
 
 /** Plugin data.json did not match the settings schema. */
 export class PluginSettingsDecodeError extends Schema.TaggedError<PluginSettingsDecodeError>()(

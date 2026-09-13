@@ -1,12 +1,12 @@
 import { assert, describe, it } from '@effect/vitest'
 import { Effect, Schema } from 'effect'
 
-import { memoryPluginDataStoreLayer, PluginDataStore } from '#src/plugin-data-store'
+import { memoryPluginDataStoreLayer, PluginDataStore } from '#/src/plugin-data-store'
 import {
 	loadPluginSettings,
 	PluginSettingsDecodeError,
 	savePluginSettings,
-} from '#src/plugin-settings'
+} from '#/src/plugin-settings'
 
 const SampleSettings = Schema.Struct({
 	theme: Schema.String,
