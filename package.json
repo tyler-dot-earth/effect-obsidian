@@ -4,8 +4,12 @@
 	"private": true,
 	"description": "Effect helpers for Obsidian plugins",
 	"license": "0BSD",
+	"bin": {
+		"effect-obsidian": "./dist/cli.mjs"
+	},
 	"files": [
 		"src",
+		"dist/cli.mjs",
 		"!**/*.test.ts"
 	],
 	"type": "module",
@@ -21,14 +25,17 @@
 		}
 	},
 	"scripts": {
-		"check": "pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run test",
+		"build:cli": "node esbuild.cli.mjs",
+		"check": "pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run test && pnpm run build:cli",
 		"format": "oxfmt --write .",
 		"format:check": "oxfmt --check .",
 		"lint": "oxlint --type-aware .",
+		"prepare": "node esbuild.cli.mjs",
 		"test": "vitest run",
 		"typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.vitest.json --noEmit"
 	},
 	"dependencies": {
+		"@effect/platform-node": "4.0.0-rc.113",
 		"effect": "4.0.0-rc.113"
 	},
 	"devDependencies": {
@@ -36,6 +43,7 @@
 		"@effect/vitest": "4.0.0-rc.113",
 		"@oxlint/plugins": "1.82.0",
 		"@types/node": "24.9.2",
+		"esbuild": "0.28.2",
 		"oxfmt": "0.67.0",
 		"oxlint": "1.82.0",
 		"oxlint-tsgolint": "7.0.2001",

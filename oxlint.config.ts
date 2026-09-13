@@ -77,6 +77,26 @@ export default defineConfig({
 	},
 	overrides: [
 		{
+			files: ['src/effect-obsidian-cli.ts'],
+			rules: {
+				'anti-slop/no-object-parameters': 'off',
+			},
+		},
+		{
+			files: ['src/plugin-manifest-bump.ts'],
+			rules: {
+				'typescript/no-unsafe-assignment': 'off',
+				'typescript/no-unsafe-return': 'off',
+			},
+		},
+		{
+			files: ['esbuild.cli.mjs'],
+			rules: {
+				'import/no-default-export': 'off',
+				'no-console': 'off',
+			},
+		},
+		{
 			files: ['oxlint.config.ts', 'vitest.config.ts'],
 			rules: {
 				'import/no-default-export': 'off',

@@ -18,6 +18,7 @@ Effect helpers for Obsidian plugins. Latest Effect v4 rc. Not an Obsidian API wr
 
 - One concept per file, kebab-case names
 - Package imports: `#/src/plugin-data-store`
+- CLI bin `effect-obsidian`: `release` and `bump-manifest` for plugin versioning
 - Colocate tests next to the module
 - Do not import `obsidian`. Hosts pass `loadData` / `saveData` callbacks
 
