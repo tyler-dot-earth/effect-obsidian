@@ -8,21 +8,21 @@ Pass `plugin.loadData` and `plugin.saveData` through. Missing data (`undefined` 
 
 Everything else stays in the plugin. Commands, views, vault, workspace, editor, Bases, settings tabs, `onExternalSettingsChange`, ribbon, status bar. Call those on `Plugin` and `App` as usual.
 
-Not on npm yet. Consume it as a sibling checkout:
+Unscoped `effect-obsidian` on npm is someone else's package. This one is `@tyler-dot-earth/effect-obsidian`.
 
-```text
-~/effect-obsidian
-~/obsidian-lanes
-~/obsidian-forest
+```bash
+pnpm add effect @tyler-dot-earth/effect-obsidian
 ```
 
-```json
-{
-	"dependencies": {
-		"effect": "4.0.0-rc.113",
-		"effect-obsidian": "file:../effect-obsidian"
-	}
-}
+```ts
+import { loadPluginSettings, makePluginRuntime } from '@tyler-dot-earth/effect-obsidian'
+```
+
+CLI for plugin release and `manifest.json` bump:
+
+```bash
+pnpm exec effect-obsidian release patch
+pnpm exec effect-obsidian bump-manifest
 ```
 
 ## Scripts
@@ -30,4 +30,17 @@ Not on npm yet. Consume it as a sibling checkout:
 ```bash
 pnpm install
 pnpm check
+pnpm release patch
 ```
+
+## Release
+
+```bash
+pnpm release patch
+pnpm release minor
+pnpm release major
+```
+
+Log in once with `pnpm login`. Then `pnpm release patch` on a clean tree: check, bump, tag `vX.Y.Z`, push github then origin, `pnpm publish` (OTP in that terminal). The tag workflow only creates the GitHub release.
+
+The `effect-obsidian` bin (`release` / `bump-manifest`) is for Obsidian plugins, not this package.

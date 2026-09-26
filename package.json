@@ -1,9 +1,14 @@
 {
-	"name": "effect-obsidian",
-	"version": "0.0.1",
-	"private": true,
+	"name": "@tyler-dot-earth/effect-obsidian",
+	"version": "0.1.0",
 	"description": "Effect helpers for Obsidian plugins",
+	"homepage": "https://github.com/tyler-dot-earth/effect-obsidian#readme",
 	"license": "0BSD",
+	"author": "tyler.earth",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tyler-dot-earth/effect-obsidian.git"
+	},
 	"bin": {
 		"effect-obsidian": "./dist/cli.mjs"
 	},
@@ -24,6 +29,9 @@
 			"default": "./src/index.ts"
 		}
 	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"build:cli": "node esbuild.cli.mjs",
 		"check": "pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run test && pnpm run build:cli",
@@ -31,6 +39,8 @@
 		"format:check": "oxfmt --check .",
 		"lint": "oxlint --type-aware .",
 		"prepare": "node esbuild.cli.mjs",
+		"prepublishOnly": "node esbuild.cli.mjs",
+		"release": "node scripts/release.mjs",
 		"test": "vitest run",
 		"typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.vitest.json --noEmit"
 	},

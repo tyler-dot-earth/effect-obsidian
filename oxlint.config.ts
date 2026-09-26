@@ -90,10 +90,11 @@ export default defineConfig({
 			},
 		},
 		{
-			files: ['esbuild.cli.mjs'],
+			files: ['esbuild.cli.mjs', 'scripts/release.mjs'],
 			rules: {
 				'import/no-default-export': 'off',
 				'no-console': 'off',
+				'max-lines-per-function': 'off',
 			},
 		},
 		{
@@ -128,6 +129,7 @@ export default defineConfig({
 		'.roo/**',
 		'.windsurf/**',
 		'tools/oxlint/anti-slop/**',
+		'scripts/release.mjs',
 	],
 	options: {
 		typeAware: true,
