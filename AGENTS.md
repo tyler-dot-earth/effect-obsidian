@@ -19,7 +19,7 @@ Effect helpers for Obsidian plugins. Latest Effect v4 rc. Not an Obsidian API wr
 - One concept per file, kebab-case names
 - Package imports: `#/src/plugin-data-store`
 - CLI bin `effect-obsidian`: `release` and `bump-manifest` for plugin versioning
-- npm name is `@tyler-dot-earth/effect-obsidian`. Unscoped `effect-obsidian` is taken
+- npm name is `@tyler.earth/effect-obsidian`. Unscoped `effect-obsidian` is taken
 - Library release: `pnpm login` once, then `pnpm release patch|minor|major`. Publishes npm from this machine. Tag workflow only creates the GitHub release
 - Colocate tests next to the module
 - Do not import `obsidian`. Hosts pass `loadData` / `saveData` callbacks

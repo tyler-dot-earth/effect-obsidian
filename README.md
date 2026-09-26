@@ -8,14 +8,14 @@ Pass `plugin.loadData` and `plugin.saveData` through. Missing data (`undefined` 
 
 Everything else stays in the plugin. Commands, views, vault, workspace, editor, Bases, settings tabs, `onExternalSettingsChange`, ribbon, status bar. Call those on `Plugin` and `App` as usual.
 
-Unscoped `effect-obsidian` on npm is someone else's package. This one is `@tyler-dot-earth/effect-obsidian`.
+Unscoped `effect-obsidian` on npm is someone else's package. This one is `@tyler.earth/effect-obsidian`.
 
 ```bash
-pnpm add effect @tyler-dot-earth/effect-obsidian
+pnpm add effect @tyler.earth/effect-obsidian
 ```
 
 ```ts
-import { loadPluginSettings, makePluginRuntime } from '@tyler-dot-earth/effect-obsidian'
+import { loadPluginSettings, makePluginRuntime } from '@tyler.earth/effect-obsidian'
 ```
 
 CLI for plugin release and `manifest.json` bump:
