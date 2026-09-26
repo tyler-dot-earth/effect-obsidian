@@ -1,6 +1,6 @@
 {
 	"name": "@tyler.earth/effect-obsidian",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Effect helpers for Obsidian plugins",
 	"homepage": "https://github.com/tyler-dot-earth/effect-obsidian#readme",
 	"license": "0BSD",
